@@ -1,6 +1,24 @@
-# Auggie MCP Server
+# Auggie Context MCP Server
+
+[![npm version](https://badge.fury.io/js/auggie-context-mcp.svg)](https://www.npmjs.com/package/auggie-context-mcp)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A Model Context Protocol (MCP) server that exposes Auggie CLI for codebase context retrieval. This allows AI agents like Claude, Cursor, and others to query codebases using Augment's powerful context engine.
+
+## Quick Start
+
+```bash
+# 1. Install Auggie CLI (if not already installed)
+# See: https://docs.augmentcode.com/cli/overview
+
+# 2. Get your access token
+auggie token print
+
+# 3. Run the MCP server
+npx -y auggie-context-mcp@latest
+```
+
+**⚠️ IMPORTANT**: You must set the `AUGMENT_SESSION_AUTH` environment variable with your token (see [Authentication](#authentication) section).
 
 ## Features
 
@@ -16,39 +34,46 @@ A Model Context Protocol (MCP) server that exposes Auggie CLI for codebase conte
 - **Auggie CLI** installed and available on PATH
   - Install: See [Auggie CLI installation guide](https://docs.augmentcode.com/cli/overview)
   - Verify: `auggie --version`
-- **Augment API Token** (see Authentication section below)
+- **Augment Access Token** (REQUIRED - see Authentication section below)
 
 ## Authentication
 
-You need an Augment API token to use this server.
+⚠️ **REQUIRED**: You must provide an Augment access token to use this server.
 
 ### Get Your Token
 
 ```bash
-# Ensure Auggie CLI is installed
+# 1. Ensure Auggie CLI is installed
 auggie --version
 
-# Sign in (opens browser)
+# 2. Sign in to Augment (opens browser)
 auggie login
 
-# Print your token
+# 3. Print your access token
 auggie token print
+```
+
+This will output something like:
+```
+TOKEN={"accessToken":"your-token-here","tenantURL":"https://...","scopes":["read","write"]}
 ```
 
 ### Set the Token
 
-The server requires the `AUGMENT_SESSION_AUTH` environment variable.
+The server **requires** the `AUGMENT_SESSION_AUTH` environment variable to be set.
 
 **Option 1: In MCP client config (recommended)**
+
+Add the token to your MCP client configuration:
 
 ```json
 {
   "mcpServers": {
-    "auggie-mcp": {
+    "auggie-context": {
       "command": "npx",
-      "args": ["-y", "auggie-mcp@latest"],
+      "args": ["-y", "auggie-context-mcp@latest"],
       "env": {
-        "AUGMENT_SESSION_AUTH": "{\"accessToken\":\"...\",\"tenantURL\":\"...\",\"scopes\":[...]}"
+        "AUGMENT_SESSION_AUTH": "{\"accessToken\":\"your-token-here\",\"tenantURL\":\"https://...\",\"scopes\":[\"read\",\"write\"]}"
       }
     }
   }
@@ -76,22 +101,27 @@ source ~/.zshrc
 ### Quick Test (Terminal)
 
 ```bash
+# Set your token first
+export AUGMENT_SESSION_AUTH=$(auggie token print | grep '^TOKEN=' | cut -d= -f2-)
+
 # Run directly with npx (will auto-install)
-npx -y auggie-mcp
+npx -y auggie-context-mcp@latest
 ```
 
 ### Cursor Configuration
 
-Add to your Cursor MCP config (global or per-project):
+Add to your Cursor MCP config (`.cursor/mcp.json` - global or per-project):
+
+**⚠️ IMPORTANT**: Replace the `AUGMENT_SESSION_AUTH` value with your actual token from `auggie token print`
 
 ```json
 {
   "mcpServers": {
-    "auggie-mcp": {
+    "auggie-context": {
       "command": "npx",
-      "args": ["-y", "auggie-mcp@latest"],
+      "args": ["-y", "auggie-context-mcp@latest"],
       "env": {
-        "AUGMENT_SESSION_AUTH": "{\"accessToken\":\"...\",\"tenantURL\":\"...\",\"scopes\":[...]}"
+        "AUGMENT_SESSION_AUTH": "{\"accessToken\":\"your-token-here\",\"tenantURL\":\"https://...\",\"scopes\":[\"read\",\"write\"]}"
       }
     }
   }
@@ -102,14 +132,16 @@ Add to your Cursor MCP config (global or per-project):
 
 Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
+**⚠️ IMPORTANT**: Replace the `AUGMENT_SESSION_AUTH` value with your actual token from `auggie token print`
+
 ```json
 {
   "mcpServers": {
-    "auggie-mcp": {
+    "auggie-context": {
       "command": "npx",
-      "args": ["-y", "auggie-mcp@latest"],
+      "args": ["-y", "auggie-context-mcp@latest"],
       "env": {
-        "AUGMENT_SESSION_AUTH": "{\"accessToken\":\"...\",\"tenantURL\":\"...\",\"scopes\":[...]}"
+        "AUGMENT_SESSION_AUTH": "{\"accessToken\":\"your-token-here\",\"tenantURL\":\"https://...\",\"scopes\":[\"read\",\"write\"]}"
       }
     }
   }
@@ -120,14 +152,16 @@ Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
 
 Edit `%APPDATA%\Claude\claude_desktop_config.json`:
 
+**⚠️ IMPORTANT**: Replace the `AUGMENT_SESSION_AUTH` value with your actual token from `auggie token print`
+
 ```json
 {
   "mcpServers": {
-    "auggie-mcp": {
+    "auggie-context": {
       "command": "npx",
-      "args": ["-y", "auggie-mcp@latest"],
+      "args": ["-y", "auggie-context-mcp@latest"],
       "env": {
-        "AUGMENT_SESSION_AUTH": "{\"accessToken\":\"...\",\"tenantURL\":\"...\",\"scopes\":[...]}"
+        "AUGMENT_SESSION_AUTH": "{\"accessToken\":\"your-token-here\",\"tenantURL\":\"https://...\",\"scopes\":[\"read\",\"write\"]}"
       }
     }
   }
@@ -167,7 +201,7 @@ Show me how the payment processing is handled.
 
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/auggie-mcp.git
+git clone https://github.com/aj47/auggie-mcp.git
 cd auggie-mcp
 
 # Install dependencies
@@ -210,7 +244,7 @@ node dist/index.js
            │ MCP Protocol (stdio)
            ▼
 ┌─────────────────────┐
-│   auggie-mcp        │
+│ auggie-context-mcp  │
 │  (TypeScript/Node)  │
 │                     │
 │  Tool:              │
