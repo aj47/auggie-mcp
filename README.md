@@ -7,18 +7,46 @@ A Model Context Protocol (MCP) server that exposes Auggie CLI for codebase conte
 
 ## Quick Start
 
-```bash
-# 1. Install Auggie CLI (if not already installed)
-# See: https://docs.augmentcode.com/cli/overview
+This MCP server is designed to be used with MCP clients like **Claude Desktop** or **Cursor**. It cannot be used standalone.
 
-# 2. Get your access token
-auggie token print
+### Prerequisites
 
-# 3. Run the MCP server
-npx -y auggie-context-mcp@latest
+1. **Install Auggie CLI**: https://docs.augmentcode.com/cli/overview
+2. **Get your access token**:
+   ```bash
+   auggie token print
+   ```
+   Copy the entire JSON token (everything after `TOKEN=`)
+
+### Setup with Claude Desktop
+
+1. Edit `~/Library/Application Support/Claude/claude_desktop_config.json` (macOS) or `%APPDATA%\Claude\claude_desktop_config.json` (Windows)
+2. Add this configuration (replace `your-token-here` with your actual token):
+
+```json
+{
+  "mcpServers": {
+    "auggie-context": {
+      "command": "npx",
+      "args": ["-y", "auggie-context-mcp@latest"],
+      "env": {
+        "AUGMENT_SESSION_AUTH": "{\"accessToken\":\"your-token-here\",\"tenantURL\":\"https://...\",\"scopes\":[\"read\",\"write\"]}"
+      }
+    }
+  }
+}
 ```
 
-**⚠️ IMPORTANT**: You must set the `AUGMENT_SESSION_AUTH` environment variable with your token (see [Authentication](#authentication) section).
+3. Restart Claude Desktop
+4. You should now see the `query_codebase` tool available in Claude
+
+### Setup with Cursor
+
+1. Create or edit `.cursor/mcp.json` in your project or globally
+2. Add the same configuration as above
+3. Restart Cursor
+
+See [Installation & Usage](#installation--usage) section for detailed instructions.
 
 ## Features
 
@@ -98,15 +126,7 @@ source ~/.zshrc
 
 ## Installation & Usage
 
-### Quick Test (Terminal)
-
-```bash
-# Set your token first
-export AUGMENT_SESSION_AUTH=$(auggie token print | grep '^TOKEN=' | cut -d= -f2-)
-
-# Run directly with npx (will auto-install)
-npx -y auggie-context-mcp@latest
-```
+**Note**: This server is designed to be used with MCP clients (Claude Desktop, Cursor, etc.). It uses the MCP protocol over stdio and cannot be run standalone.
 
 ### Cursor Configuration
 
@@ -227,11 +247,14 @@ npm run dev
 # Build the project
 npm run build
 
-# Test with MCP Inspector (if installed)
+# Set your token
+export AUGMENT_SESSION_AUTH=$(auggie token print | grep '^TOKEN=' | cut -d= -f2-)
+
+# Test with MCP Inspector (recommended)
 npx @modelcontextprotocol/inspector node dist/index.js
 
-# Or test directly
-node dist/index.js
+# Or test with a real MCP client (Claude Desktop, Cursor)
+# by pointing it to your local build instead of npx
 ```
 
 ## Architecture
@@ -263,9 +286,19 @@ node dist/index.js
 
 ## Troubleshooting
 
+### Server not showing up in Claude/Cursor
+
+1. **Check config file syntax**: Ensure your JSON is valid (no trailing commas, proper quotes)
+2. **Verify token is set**: Make sure `AUGMENT_SESSION_AUTH` is in the `env` section with your actual token
+3. **Restart the client**: Completely quit and restart Claude Desktop or Cursor
+4. **Check logs**:
+   - **Claude Desktop (macOS)**: `~/Library/Logs/Claude/mcp*.log`
+   - **Claude Desktop (Windows)**: `%APPDATA%\Claude\logs\mcp*.log`
+   - **Cursor**: Check MCP logs in settings
+
 ### "Auggie CLI not found"
 
-Ensure Auggie is installed and on your PATH:
+The server cannot find the Auggie CLI. Ensure it's installed and on your PATH:
 
 ```bash
 auggie --version
@@ -275,27 +308,22 @@ If not found, install from: https://docs.augmentcode.com/cli/overview
 
 ### "AUGMENT_SESSION_AUTH environment variable is required"
 
-Set your token as described in the Authentication section.
+You need to set your access token in the MCP client configuration:
+
+1. Run `auggie token print` to get your token
+2. Copy the entire JSON value (everything after `TOKEN=`)
+3. Add it to the `env` section in your MCP config (see examples above)
 
 ### "Query timed out"
 
-Increase the timeout:
+For large codebases, queries may take longer. The default timeout is 240 seconds (4 minutes). If you need more time, you can't currently configure this in the MCP client config, but you can modify the source code and rebuild.
 
-```json
-{
-  "query": "your question",
-  "timeout_sec": 600
-}
-```
+### Tool not appearing in Claude/Cursor
 
-### Server not showing up in Claude/Cursor
-
-1. Check the config file syntax (valid JSON)
-2. Ensure `AUGMENT_SESSION_AUTH` is set in the `env` section
-3. Restart the client application completely
-4. Check logs:
-   - **Claude Desktop (macOS)**: `~/Library/Logs/Claude/mcp*.log`
-   - **Cursor**: Check the MCP logs in settings
+1. Verify the server is configured correctly in your MCP config
+2. Check that the config file is in the correct location
+3. Restart the client application
+4. Look for the `query_codebase` tool in the available tools list
 
 ## Security
 
