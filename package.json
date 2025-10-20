@@ -1,10 +1,10 @@
 {
-  "name": "auggie-mcp",
+  "name": "auggie-context-mcp",
   "version": "0.1.0",
   "description": "MCP server exposing Auggie CLI for codebase context retrieval",
   "type": "module",
   "bin": {
-    "auggie-mcp": "./dist/index.js"
+    "auggie-context-mcp": "./dist/index.js"
   },
   "files": [
     "dist",
@@ -30,11 +30,11 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/aj47/auggie-mcp.git"
+    "url": "https://github.com/aj47/auggie-context-mcp.git"
   },
-  "homepage": "https://github.com/aj47/auggie-mcp#readme",
+  "homepage": "https://github.com/aj47/auggie-context-mcp#readme",
   "bugs": {
-    "url": "https://github.com/aj47/auggie-mcp/issues"
+    "url": "https://github.com/aj47/auggie-context-mcp/issues"
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4"
