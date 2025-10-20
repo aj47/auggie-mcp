@@ -1,0 +1,27 @@
+# Source files
+src/
+tsconfig.json
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+DEVELOPMENT.md
+IMPLEMENTATION_SUMMARY.md
+CHECKLIST.md
+TEST_RESULTS.md
+example-config.json
+
+# Test files
+test-mcp.js
+test-mcp-detailed.js
+coverage/
+.nyc_output/
+
+# Misc
+.DS_Store
+Thumbs.db
+*.log
+*.tsbuildinfo
+

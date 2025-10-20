@@ -1,0 +1,48 @@
+{
+  "name": "auggie-mcp",
+  "version": "0.1.0",
+  "description": "MCP server exposing Auggie CLI for codebase context retrieval",
+  "type": "module",
+  "bin": {
+    "auggie-mcp": "./dist/index.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch",
+    "prepare": "npm run build",
+    "dev": "tsx src/index.ts"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "keywords": [
+    "mcp",
+    "augment",
+    "auggie",
+    "context-engine",
+    "codebase-retrieval"
+  ],
+  "author": "AJ",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/aj47/auggie-mcp.git"
+  },
+  "homepage": "https://github.com/aj47/auggie-mcp#readme",
+  "bugs": {
+    "url": "https://github.com/aj47/auggie-mcp/issues"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}
+

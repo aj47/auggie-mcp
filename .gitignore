@@ -1,0 +1,50 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+lerna-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Testing
+coverage/
+.nyc_output/
+
+# Misc
+*.tsbuildinfo
+
+# Test files (local only)
+test-mcp.js
+test-mcp-detailed.js
+
+# Unnecessary documentation (keep only README.md)
+DEVELOPMENT.md
+IMPLEMENTATION_SUMMARY.md
+CHECKLIST.md
+TEST_RESULTS.md
+PRE_PUSH_CHECKLIST.md
+SECURITY_AUDIT.md
+QUICKSTART.md
+example-config.json
+
